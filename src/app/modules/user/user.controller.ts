@@ -1,19 +1,43 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpstatus from 'http-status-codes';
 import { userService } from "./user.service";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
 
-const createUser = async (req: Request, res: Response, next : NextFunction) => {
-    try {
-        const user = await userService.createUser(req.body)
 
-        res.status(httpstatus.CREATED).json({ message: 'User created successfully', user })
+const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userService.createUser(req.body)
 
-    } catch (error: any) {
-        next(error)
-    }
-}
+    // res.status(httpstatus.CREATED).json({ message: 'User created successfully', user })
+        sendResponse(res, {
+        success : true,
+        statusCode :httpstatus.CREATED, 
+        message : 'User created successfully',
+        data : user
+    })
+})
+
+
+const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await userService.getAllUsers()
+
+    // res.status(httpstatus.OK).json({
+    //     success : true,
+    //     message : 'Users retrived sucessfully',
+    //     users
+    // })
+
+    sendResponse(res, {
+        success : true,
+        statusCode :httpstatus.OK, 
+        message : 'Users retrived sucessfully',
+        meta : result.meta,
+        data : result.data
+    })
+})
 
 export const userController = {
-    createUser
+    createUser,
+    getAllUsers
 }
