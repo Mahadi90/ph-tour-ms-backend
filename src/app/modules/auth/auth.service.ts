@@ -3,7 +3,8 @@ import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import httpstatus from 'http-status-codes';
 import bcryptjs from "bcryptjs"
-import jwt from 'jsonwebtoken'
+import { craeteToken } from "../../utils/jwt";
+import { envVars } from "../../config/env";
 
 
 const credentialLogin = async(payload : Partial<IUser>) => {
@@ -26,9 +27,7 @@ const credentialLogin = async(payload : Partial<IUser>) => {
         role : isUserExist.role
     }
 
-    const accessToken = jwt.sign(jwtPayload, 'secret', {
-        expiresIn : '1d'
-    })
+    const accessToken = craeteToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRES)
 
     return {
         email : isUserExist.email,

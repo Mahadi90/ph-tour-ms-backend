@@ -2,10 +2,16 @@ import { Router } from "express";
 import { userController } from "./user.controller";
 import { createUserZodValidation } from "./user.validation";
 import { validationRequest } from "../../middlewares/validationRequest";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { Role } from "./user.interface";
+
 
 const router = Router()
 
+
+
 router.post('/register',validationRequest(createUserZodValidation), userController.createUser)
-router.get('/all-user', userController.getAllUsers)
+router.get('/all-user', checkAuth(Role.ADMIN, Role.SUPER_ADMIN),userController.getAllUsers)
+
 
 export const userRouter = router
