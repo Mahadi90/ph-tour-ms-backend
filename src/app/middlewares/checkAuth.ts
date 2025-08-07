@@ -17,6 +17,8 @@ export const checkAuth = (...authRoles : string[]) => (req : Request, res : Resp
        if(!authRoles.includes(verifiedToken.role)){
         throw new AppError(403, 'You are not parmitted to see all user')
        }
+
+       req.user = verifyToken
        next()
 
     } catch (error) {
